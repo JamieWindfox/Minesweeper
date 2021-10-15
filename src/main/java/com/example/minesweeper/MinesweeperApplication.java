@@ -38,8 +38,6 @@ public class MinesweeperApplication extends Application {
 
         layout.getChildren().addAll(createTopPane(), createMiddlePane(), createBottomPane());
 
-        GameHandler.setTotalEmptyTilesCount(FIELD_HEIGHT_TILES * FIELD_WIDTH_TILES - MINE_COUNT);
-
         Scene scene = new Scene(layout, STAGE_WIDTH_PIXEL, STAGE_HEIGHT_PIXEL);
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -57,13 +55,13 @@ public class MinesweeperApplication extends Application {
     }
 
     private static GridPane createMiddlePane() {
-        GridPane pane = new GridPane();
-        GridPane.setConstraints(pane, 0, 1);
-        pane.setVgap(2);
-        pane.setHgap(2);
+        MineField mineField = new MineField(FIELD_WIDTH_TILES, FIELD_HEIGHT_TILES, TILE_SIZE_PIXEL, MINE_COUNT);
+        GridPane.setConstraints(mineField, 0, 1);
+        mineField.setVgap(2);
+        mineField.setHgap(2);
 
-        GameHandler.createGame(FIELD_WIDTH_TILES, FIELD_HEIGHT_TILES, TILE_SIZE_PIXEL, pane, MINE_COUNT);
-        return pane;
+        GameHandler.createGame(mineField);
+        return mineField;
     }
 
     private static GridPane createBottomPane() {

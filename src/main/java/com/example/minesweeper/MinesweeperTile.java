@@ -7,11 +7,12 @@ import javafx.scene.paint.Color;
 public class MinesweeperTile extends Button {
 
     private final String HIDDEN_TILE_COLOR = "#999999";
-    private final String FLAGGED_TILE_COLOR = "#f4cccc";
+    private final String FLAGGED_TILE_COLOR = "#fffd9c";
     private final String MINE_TILE_COLOR = "#ff0000";
 
     private boolean _isMine = false;
     private boolean _isFlagged = false;
+    private int adjacentMineCount = 0;
 
     public MinesweeperTile(int tileSizeInPixel) {
         super();
@@ -51,16 +52,22 @@ public class MinesweeperTile extends Button {
             setStyle("-fx-background-color: " + MINE_TILE_COLOR);
             setDisabled(true);
             // flip all tiles on board
-            GameHandler.flipAllTiles();
+            GameHandler.loseGame();
 
             // lose game
             System.out.println("The tile was a mine. Game lost.");
         } else {
             // flip tile and disable it
-            this.setDisabled(true);
-            GameHandler.flipEmptyTile();
+            if(adjacentMineCount > 0) {
+                setText(String.valueOf(adjacentMineCount));
+            }
+            setDisabled(true);
             System.out.println("The tile was not a mine");
         }
+    }
+
+    public void setAdjacentToMine() {
+        adjacentMineCount++;
     }
 
     /**
@@ -81,6 +88,9 @@ public class MinesweeperTile extends Button {
         System.out.println("Flag: " + _isFlagged);
     }
 
+    public boolean isMine() {
+        return _isMine;
+    }
 
 
 
