@@ -6,6 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -21,6 +22,11 @@ public class MinesweeperApplication extends Application {
     private final static int MINE_COUNT = 10;
 
     private static Stage primaryStage;
+    private static MineField mineField;
+    private static Label statusLabel;
+    private static Button restartButton;
+    private static GridPane buttonPane;
+    private static  GridPane statusPane;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -32,6 +38,7 @@ public class MinesweeperApplication extends Application {
 
     public static void startGame() {
         GridPane layout = new GridPane();
+        layout.setDisable(true);
         layout.setHgap(TILE_SIZE_PIXEL);
         layout.setPadding(new Insets(TILE_SIZE_PIXEL, TILE_SIZE_PIXEL, TILE_SIZE_PIXEL, TILE_SIZE_PIXEL));
         layout.setAlignment(Pos.CENTER);
@@ -41,21 +48,30 @@ public class MinesweeperApplication extends Application {
         Scene scene = new Scene(layout, STAGE_WIDTH_PIXEL, STAGE_HEIGHT_PIXEL);
         primaryStage.setScene(scene);
         primaryStage.show();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            startGame();
+        }
+        layout.setDisable(false);
     }
 
     private static GridPane createTopPane() {
-        GridPane pane = new GridPane();
-        Label label = new Label("top row");
+        buttonPane = new GridPane();
+        restartButton = new Button("Restart");
+        restartButton.setOnMouseClicked(event -> {
+            startGame();
+        });
 
-        GridPane.setConstraints(pane, 0, 0);
-        GridPane.setConstraints(label, 0, 0);
+        GridPane.setConstraints(buttonPane, 0, 0);
+        GridPane.setConstraints(restartButton, 0, 0);
 
-        pane.getChildren().add(label);
-        return pane;
+        buttonPane.getChildren().add(restartButton);
+        return buttonPane;
     }
 
     private static GridPane createMiddlePane() {
-        MineField mineField = new MineField(FIELD_WIDTH_TILES, FIELD_HEIGHT_TILES, TILE_SIZE_PIXEL, MINE_COUNT);
+        mineField = new MineField(FIELD_WIDTH_TILES, FIELD_HEIGHT_TILES, TILE_SIZE_PIXEL, MINE_COUNT);
         GridPane.setConstraints(mineField, 0, 1);
         mineField.setVgap(2);
         mineField.setHgap(2);
@@ -65,14 +81,23 @@ public class MinesweeperApplication extends Application {
     }
 
     private static GridPane createBottomPane() {
-        GridPane pane = new GridPane();
-        Label label = new Label("bottom row");
+        statusPane = new GridPane();
+        statusLabel = new Label("");
 
-        GridPane.setConstraints(pane, 0, 2);
-        GridPane.setConstraints(label, 0, 2);
+        GridPane.setConstraints(statusPane, 0, 2);
+        GridPane.setConstraints(statusLabel, 0, 2);
 
-        pane.getChildren().add(label);
-        return pane;
+        statusPane.getChildren().add(statusLabel);
+        return statusPane;
+    }
+
+    public static void finishGame(boolean wonGame) {
+        if(wonGame == true) {
+            statusLabel.setText("Congratulations, you won the game!");
+        }
+        else {
+            statusLabel.setText("You stepped into dogs crap. Game Over");
+        }
     }
 
     public static void main(String[] args) {
