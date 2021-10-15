@@ -54,10 +54,8 @@ public class MinesweeperApplication extends Application {
 
         for(int i = 0; i < FIELD_WIDTH_TILES; ++i) {
             for(int j = 0; j < FIELD_HEIGHT_TILES; ++j) {
-                Button button = new Button("");
-                button.setPrefSize(25, 25);
-                button.setMinSize(25, 25);
-                pane.add(button, i, j);
+                MinesweeperTile tile = new MinesweeperTile(TILE_SIZE_PIXEL);
+                pane.add(tile, i, j);
             }
         }
 
