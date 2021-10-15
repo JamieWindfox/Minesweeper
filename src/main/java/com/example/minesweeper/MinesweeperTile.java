@@ -52,7 +52,7 @@ public class MinesweeperTile extends Button {
             setStyle("-fx-background-color: " + MINE_TILE_COLOR);
             setDisabled(true);
             // flip all tiles on board
-            GameHandler.loseGame();
+            GameHandler.looseGame();
 
             // lose game
             System.out.println("The tile was a mine. Game lost.");
@@ -62,6 +62,7 @@ public class MinesweeperTile extends Button {
                 setText(String.valueOf(adjacentMineCount));
             }
             setDisabled(true);
+            GameHandler.flipEmptyTile(false);
             System.out.println("The tile was not a mine");
         }
     }

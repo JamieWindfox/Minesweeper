@@ -22,6 +22,7 @@ public class MineField extends GridPane {
 
 
     public MineField(int width, int height, int tileSize, int mineCount) {
+        super();
         FIELD_WIDTH_TILES = width;
         FIELD_HEIGHT_TILES = height;
         TILE_SIZE_PIXEL = tileSize;
@@ -29,6 +30,16 @@ public class MineField extends GridPane {
         STAGE_WIDTH_PIXEL = FIELD_WIDTH_TILES * TILE_SIZE_PIXEL + 34;
         MINE_COUNT = mineCount;
 
+    }
+
+    public MineField(MineField field) {
+        super();
+        FIELD_WIDTH_TILES = field.FIELD_WIDTH_TILES;
+        FIELD_HEIGHT_TILES = field.FIELD_HEIGHT_TILES;
+        TILE_SIZE_PIXEL = field.TILE_SIZE_PIXEL;
+        STAGE_HEIGHT_PIXEL = field.STAGE_HEIGHT_PIXEL;
+        STAGE_WIDTH_PIXEL = field.STAGE_WIDTH_PIXEL;
+        MINE_COUNT = field.MINE_COUNT;
     }
 
     public void generateMineField() {
@@ -58,6 +69,7 @@ public class MineField extends GridPane {
         }
 
         setAdjacentMineNumbers();
+
     }
 
     private void setAdjacentMineNumbers() {
@@ -102,19 +114,9 @@ public class MineField extends GridPane {
         return null;
     }
 
-    public void flipEmptyTile() {
-        flippedEmptyTilesCount++;
-
-        if(mineExploded == false && flippedEmptyTilesCount >= FIELD_HEIGHT_TILES*FIELD_WIDTH_TILES - MINE_COUNT) {
-            System.out.println("You won the game!");
-            GameHandler.winGame();
-        }
-    }
-
     public void flipAllTiles() {
         mineExploded = true;
         for(Node tile : getChildren()) {
-            System.out.println("FlipAllTiles flips: " + tile.toString());
             if(tile instanceof MinesweeperTile) {
                 ((MinesweeperTile) tile).flip();
             }
