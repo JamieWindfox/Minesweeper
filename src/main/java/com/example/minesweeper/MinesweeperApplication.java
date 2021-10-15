@@ -14,25 +14,25 @@ import java.io.IOException;
 public class MinesweeperApplication extends Application {
 
     private final static int FIELD_WIDTH_TILES = 10;
-    private final static int FIELD_HEIGHT_TILES = 20;
-    private final static int FIELD_SIZE = 25;
-    private final static int STAGE_HEIGHT = FIELD_HEIGHT_TILES * FIELD_SIZE + 110;
-    private final static int STAGE_WIDTH = FIELD_WIDTH_TILES * FIELD_SIZE + 30;
+    private final static int FIELD_HEIGHT_TILES = 10;
+    private final static int TILE_SIZE_PIXEL = 25;
+    private final static int STAGE_HEIGHT_PIXEL = FIELD_HEIGHT_TILES * TILE_SIZE_PIXEL + 110;
+    private final static int STAGE_WIDTH_PIXEL = FIELD_WIDTH_TILES * TILE_SIZE_PIXEL + 30;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
         primaryStage.setTitle("Minesweeper");
 
         GridPane layout = new GridPane();
-        layout.setVgap(FIELD_SIZE);
+        layout.setVgap(TILE_SIZE_PIXEL);
         //layout.setHgap(FIELD_SIZE);
-        layout.setPadding(new Insets(FIELD_SIZE, FIELD_SIZE, FIELD_SIZE, FIELD_SIZE));
+        layout.setPadding(new Insets(TILE_SIZE_PIXEL, TILE_SIZE_PIXEL, TILE_SIZE_PIXEL, TILE_SIZE_PIXEL));
         layout.setAlignment(Pos.CENTER);
 
 
         layout.getChildren().addAll(createTopPane(), createMiddlePane(), createBottomPane());
 
-        Scene scene = new Scene(layout, STAGE_WIDTH, STAGE_HEIGHT);
+        Scene scene = new Scene(layout, STAGE_WIDTH_PIXEL, STAGE_HEIGHT_PIXEL);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -54,10 +54,8 @@ public class MinesweeperApplication extends Application {
 
         for(int i = 0; i < FIELD_WIDTH_TILES; ++i) {
             for(int j = 0; j < FIELD_HEIGHT_TILES; ++j) {
-                Button button = new Button("");
-                button.setPrefSize(25, 25);
-                button.setMinSize(25, 25);
-                pane.add(button, i, j);
+                MinesweeperTile tile = new MinesweeperTile(TILE_SIZE_PIXEL);
+                pane.add(tile, i, j);
             }
         }
 
