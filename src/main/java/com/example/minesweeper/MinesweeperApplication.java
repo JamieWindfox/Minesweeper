@@ -6,6 +6,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -17,7 +19,7 @@ public class MinesweeperApplication extends Application {
     private final static int FIELD_WIDTH_TILES = 8;
     private final static int FIELD_HEIGHT_TILES = 8;
     private final static int TILE_SIZE_PIXEL = 25;
-    private final static int STAGE_HEIGHT_PIXEL = FIELD_HEIGHT_TILES * TILE_SIZE_PIXEL + 110;
+    private final static int STAGE_HEIGHT_PIXEL = FIELD_HEIGHT_TILES * TILE_SIZE_PIXEL + 120;
     private final static int STAGE_WIDTH_PIXEL = FIELD_WIDTH_TILES * TILE_SIZE_PIXEL + 34;
     private final static int MINE_COUNT = 10;
 
@@ -40,6 +42,7 @@ public class MinesweeperApplication extends Application {
         GridPane layout = new GridPane();
         layout.setDisable(true);
         layout.setHgap(TILE_SIZE_PIXEL);
+        layout.setVgap(TILE_SIZE_PIXEL);
         layout.setPadding(new Insets(TILE_SIZE_PIXEL, TILE_SIZE_PIXEL, TILE_SIZE_PIXEL, TILE_SIZE_PIXEL));
         layout.setAlignment(Pos.CENTER);
 
@@ -94,9 +97,11 @@ public class MinesweeperApplication extends Application {
     public static void finishGame(boolean wonGame) {
         if(wonGame == true) {
             statusLabel.setText("Congratulations, you won the game!");
+            statusLabel.setStyle("-fx-font-size: 12px; -fx-font-weight: bold");
         }
         else {
             statusLabel.setText("You uncovered a mine. Game Over");
+            statusLabel.setStyle("-fx-font-size: 13px; -fx-font-weight: bold");
         }
     }
 

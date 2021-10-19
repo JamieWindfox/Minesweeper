@@ -1,6 +1,8 @@
 package com.example.minesweeper;
 
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 
@@ -53,6 +55,9 @@ public class MinesweeperTile extends Button {
         if(isDisabled()) return;
         setDisabled(true);
         if(_isMine == true) {
+            Image bombPic = new Image("file:src/pictures/bomb.png");
+            ImageView view = new ImageView(bombPic);
+            this.setGraphic(view);
             setStyle("-fx-background-color: " + MINE_TILE_COLOR);
             // flip all tiles on board
             GameHandler.looseGame();
@@ -62,6 +67,7 @@ public class MinesweeperTile extends Button {
         } else {
             GameHandler.flipEmptyTile(false);
             if(adjacentMineCount > 0) {
+                setStyle("-fx-font-size: 12px; -fx-font-weight: bold;");
                 setText(String.valueOf(adjacentMineCount));
             }
             if(triggeredByMouseClick) {
@@ -86,13 +92,14 @@ public class MinesweeperTile extends Button {
         if(_isFlagged == true) {
             _isFlagged = false;
             setText("");
-            setTextFill(Color.BLACK);
             setStyle("-fx-background-color: " + HIDDEN_TILE_COLOR);
+            this.setGraphic(null);
         } else {
             _isFlagged = true;
-            setText("P");
-            setTextFill(Color.RED);
             setStyle("-fx-background-color: " + FLAGGED_TILE_COLOR);
+            Image bombPic = new Image("file:src/pictures/flag.png");
+            ImageView view = new ImageView(bombPic);
+            this.setGraphic(view);
         }
         System.out.println("Flag: " + _isFlagged);
     }
