@@ -49,7 +49,7 @@ public class MineField extends GridPane {
 
         for(int i = 0; i < FIELD_HEIGHT_TILES; ++i) {
             for(int j = 0; j < FIELD_WIDTH_TILES; ++j) {
-                MinesweeperTile tile = new MinesweeperTile(TILE_SIZE_PIXEL);
+                MinesweeperTile tile = new MinesweeperTile(TILE_SIZE_PIXEL, i, j);
 
                 int randomNumber = rnd.nextInt((FIELD_WIDTH_TILES * FIELD_HEIGHT_TILES) / MINE_COUNT);
                 if(mines < MINE_COUNT && randomNumber == 0)
@@ -65,42 +65,62 @@ public class MineField extends GridPane {
 
         if(mines < MINE_COUNT) {
             System.out.println("Too less mines were generated, try again");
-            GameHandler.createGame(this);
+            MinesweeperApplication.startGame();
+            return;
+            //GameHandler.createGame(this);
         }
 
         setAdjacentMineNumbers();
 
     }
 
+    public List<MinesweeperTile> getAdjacentTiles(int row, int column) {
+        List<MinesweeperTile> neighbours = new ArrayList<>();
+        if(row-1 >= 0 && column-1 >= 0 && getTile(row-1, column-1).isDisabled() == false) {// left up
+            neighbours.add(getTile(row-1, column-1));
+        }
+        if(row-1 >= 0 && getTile(row-1, column).isDisabled() == false) {// up
+            neighbours.add(getTile(row-1, column));
+        }
+        if(row-1 >= 0 && column+1 < FIELD_WIDTH_TILES && getTile(row-1, column+1).isDisabled() == false) {// right up
+            neighbours.add(getTile(row-1, column+1));
+        }
+        if(column+1 < FIELD_WIDTH_TILES && getTile(row, column+1).isDisabled() == false) {// right
+            neighbours.add(getTile(row, column+1));
+        }
+        if(row+1 < FIELD_HEIGHT_TILES && column+1 < FIELD_WIDTH_TILES && getTile(row+1, column+1).isDisabled() == false) {// right down
+            neighbours.add(getTile(row+1, column+1));
+        }
+        if(row+1 < FIELD_HEIGHT_TILES && getTile(row+1, column).isDisabled() == false) {// down
+            neighbours.add(getTile(row+1, column));
+        }
+        if(row+1 < FIELD_HEIGHT_TILES && column-1 >= 0 && getTile(row+1, column-1).isDisabled() == false) {// left down
+            neighbours.add(getTile(row+1, column-1));
+        }
+        if(column-1 >= 0 && getTile(row, column-1).isDisabled() == false) {//
+            neighbours.add(getTile(row, column-1));
+        }
+        return neighbours;
+    }
+
+    public List<MinesweeperTile> getAdjacentSaveTiles(int row, int column) {
+        List<MinesweeperTile> neighbours = getAdjacentTiles(row, column);
+        List<MinesweeperTile> saveNeighbours = new ArrayList<>();
+        for(MinesweeperTile tile : neighbours) {
+            if(tile.isMine() == false && tile.isDisabled() == false) {
+                saveNeighbours.add(tile);
+            }
+        }
+        return saveNeighbours;
+    }
+
     private void setAdjacentMineNumbers() {
         for(Node tile : getChildren()) {
             if(tile instanceof MinesweeperTile && ((MinesweeperTile)tile).isMine()) {
-                List<MinesweeperTile> adjacentTiles = new ArrayList<>();
-                if(getRowIndex(tile)-1 >= 0 && getColumnIndex(tile)-1 >= 0) {// left up
-                    getTile(getRowIndex(tile)-1, getColumnIndex(tile)-1).setAdjacentToMine();
+                List<MinesweeperTile> adjacentTiles = getAdjacentTiles(getRowIndex(tile), getColumnIndex(tile));
+                for(MinesweeperTile adjacentTile : adjacentTiles) {
+                    adjacentTile.setAdjacentToMine();
                 }
-                if(getRowIndex(tile)-1 >= 0) {// up
-                    getTile(getRowIndex(tile)-1, getColumnIndex(tile)).setAdjacentToMine();
-                }
-                if(getRowIndex(tile)-1 >= 0 && getColumnIndex(tile)+1 < FIELD_WIDTH_TILES) {// right up
-                    getTile(getRowIndex(tile)-1, getColumnIndex(tile)+1).setAdjacentToMine();
-                }
-                if(getColumnIndex(tile)+1 < FIELD_WIDTH_TILES) {// right
-                    getTile(getRowIndex(tile), getColumnIndex(tile)+1).setAdjacentToMine();
-                }
-                if(getRowIndex(tile)+1 < FIELD_HEIGHT_TILES && getColumnIndex(tile)+1 < FIELD_WIDTH_TILES) {// right down
-                    getTile(getRowIndex(tile)+1, getColumnIndex(tile)+1).setAdjacentToMine();
-                }
-                if(getRowIndex(tile)+1 < FIELD_HEIGHT_TILES) {// down
-                    getTile(getRowIndex(tile)+1, getColumnIndex(tile)).setAdjacentToMine();
-                }
-                if(getRowIndex(tile)+1 < FIELD_HEIGHT_TILES && getColumnIndex(tile)-1 >= 0) {// left down
-                    getTile(getRowIndex(tile)+1, getColumnIndex(tile)-1).setAdjacentToMine();
-                }
-                if(getColumnIndex(tile)-1 >= 0) {// left
-                    getTile(getRowIndex(tile), getColumnIndex(tile)-1).setAdjacentToMine();
-                }
-
             }
         }
     }
@@ -118,11 +138,20 @@ public class MineField extends GridPane {
         mineExploded = true;
         for(Node tile : getChildren()) {
             if(tile instanceof MinesweeperTile) {
-                ((MinesweeperTile) tile).flip();
+                ((MinesweeperTile) tile).flip(false);
             }
         }
     }
 
-
-
+    public void flipAdjacentEmptyTiles(int row, int column) {
+        MinesweeperTile currentTile = getTile(row, column);
+        if(currentTile.getAdjacentMineCount() > 0) {
+            return;
+        }
+        List<MinesweeperTile> neighbours = getAdjacentSaveTiles(row, column);
+        for(MinesweeperTile tile : neighbours) {
+            tile.flip(false);
+            flipAdjacentEmptyTiles(getRowIndex(tile), getColumnIndex(tile));
+        }
+    }
 }

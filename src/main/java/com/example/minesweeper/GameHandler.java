@@ -39,4 +39,8 @@ public class GameHandler {
             GameHandler.winGame();
         }
     }
+
+    public static MineField getMineField() {
+        return mineField;
+    }
 }

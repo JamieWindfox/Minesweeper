@@ -6,15 +6,16 @@ import javafx.scene.paint.Color;
 
 public class MinesweeperTile extends Button {
 
-    private final String HIDDEN_TILE_COLOR = "#999999";
-    private final String FLAGGED_TILE_COLOR = "#fffd9c";
-    private final String MINE_TILE_COLOR = "#ff0000";
+    private final static String HIDDEN_TILE_COLOR = "#999999";
+    private final static String FLAGGED_TILE_COLOR = "#fffd9c";
+    private final static String MINE_TILE_COLOR = "#ff0000";
 
     private boolean _isMine = false;
     private boolean _isFlagged = false;
     private int adjacentMineCount = 0;
+    private final int ROW, COLUMN;
 
-    public MinesweeperTile(int tileSizeInPixel) {
+    public MinesweeperTile(int tileSizeInPixel, int row, int column) {
         super();
 
         setPrefSize(tileSizeInPixel, tileSizeInPixel);
@@ -29,6 +30,9 @@ public class MinesweeperTile extends Button {
                 handleRightMouseClick();
             }
         });
+
+        ROW = row;
+        COLUMN = column;
     }
 
     public void setToMine() {
@@ -41,35 +45,39 @@ public class MinesweeperTile extends Button {
     private void handleLeftMouseClick() {
         if(_isFlagged == false) {
             // flip tile and check what it is
-            flip();
+            flip(true);
         }
     }
 
-    public void flip() {
+    public void flip(boolean triggeredByMouseClick) {
         if(isDisabled()) return;
-        System.out.println("Flip tile");
+        setDisabled(true);
         if(_isMine == true) {
             setStyle("-fx-background-color: " + MINE_TILE_COLOR);
-            setDisabled(true);
             // flip all tiles on board
             GameHandler.looseGame();
 
-            // lose game
+            // loose game
             System.out.println("The tile was a mine. Game lost.");
         } else {
-            // flip tile and disable it
+            GameHandler.flipEmptyTile(false);
             if(adjacentMineCount > 0) {
                 setText(String.valueOf(adjacentMineCount));
             }
-            setDisabled(true);
-            GameHandler.flipEmptyTile(false);
-            System.out.println("The tile was not a mine");
+            if(triggeredByMouseClick) {
+                GameHandler.getMineField().flipAdjacentEmptyTiles(ROW, COLUMN);
+            }
         }
     }
 
     public void setAdjacentToMine() {
         adjacentMineCount++;
     }
+
+    public int getAdjacentMineCount() {
+        return adjacentMineCount;
+    }
+
 
     /**
      * Set tile to flag or back

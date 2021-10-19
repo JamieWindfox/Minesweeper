@@ -14,8 +14,8 @@ import java.io.IOException;
 
 public class MinesweeperApplication extends Application {
 
-    private final static int FIELD_WIDTH_TILES = 10;
-    private final static int FIELD_HEIGHT_TILES = 10;
+    private final static int FIELD_WIDTH_TILES = 8;
+    private final static int FIELD_HEIGHT_TILES = 8;
     private final static int TILE_SIZE_PIXEL = 25;
     private final static int STAGE_HEIGHT_PIXEL = FIELD_HEIGHT_TILES * TILE_SIZE_PIXEL + 110;
     private final static int STAGE_WIDTH_PIXEL = FIELD_WIDTH_TILES * TILE_SIZE_PIXEL + 34;
@@ -96,7 +96,7 @@ public class MinesweeperApplication extends Application {
             statusLabel.setText("Congratulations, you won the game!");
         }
         else {
-            statusLabel.setText("You stepped into dogs crap. Game Over");
+            statusLabel.setText("You uncovered a mine. Game Over");
         }
     }
 
