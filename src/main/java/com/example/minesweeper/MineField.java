@@ -66,10 +66,11 @@ public class MineField extends GridPane {
             int randomRow = rnd.nextInt(FIELD_HEIGHT_TILES) -1;
             int randomColumn = rnd.nextInt(FIELD_WIDTH_TILES) -1;
 
-            if (getTile(randomRow, randomColumn).isMine() == false)
+            if (getTile(randomRow, randomColumn) != null && getTile(randomRow, randomColumn).isMine() == false) {
                 System.out.println("Set mine on " + randomRow + "/" + randomColumn);
-            minesToSet--;
-            getTile(randomRow, randomColumn).setToMine();
+                minesToSet--;
+                getTile(randomRow, randomColumn).setToMine();
+            }
         }
     }
 
