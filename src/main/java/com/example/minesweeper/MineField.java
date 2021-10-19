@@ -50,28 +50,27 @@ public class MineField extends GridPane {
         for(int i = 0; i < FIELD_HEIGHT_TILES; ++i) {
             for(int j = 0; j < FIELD_WIDTH_TILES; ++j) {
                 MinesweeperTile tile = new MinesweeperTile(TILE_SIZE_PIXEL, i, j);
-
-                int randomNumber = rnd.nextInt((FIELD_WIDTH_TILES * FIELD_HEIGHT_TILES) / MINE_COUNT);
-                if(mines < MINE_COUNT && randomNumber == 0)
-                {
-                    System.out.println("Set mine on " + i + "/" + j);
-                    mines++;
-                    tile.setToMine();
-                }
-
                 add(tile, i, j);
             }
         }
 
-        if(mines < MINE_COUNT) {
-            System.out.println("Too less mines were generated, try again");
-            MinesweeperApplication.startGame();
-            return;
-            //GameHandler.createGame(this);
-        }
-
+        setMines();
         setAdjacentMineNumbers();
 
+    }
+
+    private void setMines() {
+        Random rnd = new Random();
+        for(int minesToSet = MINE_COUNT; minesToSet > 0;) {
+
+            int randomRow = rnd.nextInt(FIELD_HEIGHT_TILES) -1;
+            int randomColumn = rnd.nextInt(FIELD_WIDTH_TILES) -1;
+
+            if (getTile(randomRow, randomColumn).isMine() == false)
+                System.out.println("Set mine on " + randomRow + "/" + randomColumn);
+            minesToSet--;
+            getTile(randomRow, randomColumn).setToMine();
+        }
     }
 
     public List<MinesweeperTile> getAdjacentTiles(int row, int column) {
